@@ -1,6 +1,8 @@
-pub const GRID_MAX_X: u64 = 100;
-pub const GRID_MAX_Y: u64 = 100;
+pub const GRID_MAX_X: usize = 100;
+pub const GRID_MAX_Y: usize = 100;
 
+#[derive(Debug)]
+#[allow(non_camel_case_types)]
 pub enum Direction {
     UP,
     DOWN,
@@ -8,16 +10,87 @@ pub enum Direction {
     RIGHT,
 }
 
+#[derive(Debug)]
+#[allow(non_camel_case_types)]
+#[derive(PartialEq)]
+pub enum Instruction {
+    TOGGLE_STRINGMODE,
+
+    PUSH_INTEGER,
+
+    POP_OUT_AS_CHAR,
+    POP_OUT_AS_INTEGER,
+
+
+    ADD,
+    SUBTRACT,
+    MULTIPLY,
+    INTEGER_DIVIDE,
+
+    PC_DIRECTION_LEFT,
+    PC_DIRECTION_RIGHT,
+    PC_DIRECTION_DOWN,
+    PC_DIRECTION_UP,
+
+    END_PROGRAM,
+    NOP,
+}
+
+impl Instruction{
+    pub fn from_u8(byte_val: u8) -> Instruction{
+        match byte_val {
+            34 => Instruction::TOGGLE_STRINGMODE,
+            44 => Instruction::POP_OUT_AS_CHAR,
+            46 => Instruction::POP_OUT_AS_INTEGER,
+
+            60 => Instruction::PC_DIRECTION_LEFT,
+            62 => Instruction::PC_DIRECTION_RIGHT,
+            94 => Instruction::PC_DIRECTION_UP,
+            118 => Instruction::PC_DIRECTION_DOWN,
+
+            42 => Instruction::MULTIPLY,
+            43 => Instruction::ADD,
+            45 => Instruction::SUBTRACT,
+            47 => Instruction::INTEGER_DIVIDE,
+            
+            64 => Instruction::END_PROGRAM,
+
+            48 ..=57 => Instruction::PUSH_INTEGER,
+
+
+            _  => Instruction::NOP,
+        }
+    }
+}
+
+
+
 pub struct InstructionPointer {
-    pub x: u64,
-    pub y: u64,
+    pub x: usize,
+    pub y: usize,
     pub direction: Direction,
+    pub stringmode_enabled: bool,
     pub stack: Vec<u8>
 }
 
 impl InstructionPointer {
     pub fn new() -> InstructionPointer{
-        InstructionPointer {x: 0, y: 0, direction: Direction::RIGHT, stack: Vec::new()}
+        InstructionPointer {x: 0, y: 0, direction: Direction::RIGHT, stringmode_enabled: false, stack: Vec::new()}
+    }
+
+    pub fn move_by_1(&mut self) {
+        // increment instruction pointer with wraparound
+        match self.direction {
+            Direction::LEFT => self.x = (self.x - 1) % GRID_MAX_X,
+            Direction::RIGHT => self.x = (self.x + 1) % GRID_MAX_X,
+
+            Direction::DOWN => self.y = (self.y + 1) % GRID_MAX_Y,
+            Direction::UP => self.y = (self.y - 1) % GRID_MAX_Y,
+
+            _ => {
+                println!("Got a bad direction: {:?}", self.direction);
+            },
+        }
     }
 }
 
