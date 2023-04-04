@@ -41,6 +41,7 @@ fn main() {
             Instruction::PC_DIRECTION_RIGHT => instruction_pointer.direction = Direction::RIGHT,
             Instruction::PC_DIRECTION_DOWN => instruction_pointer.direction = Direction::DOWN,
             Instruction::PC_DIRECTION_UP => instruction_pointer.direction = Direction::UP,
+            Instruction::PC_DIRECTION_RANDOM => { instruction_pointer.direction = rand::random::<Direction>(); },
 
 
 
@@ -68,8 +69,31 @@ fn main() {
                 instruction_pointer.stack.push( a.wrapping_div(b) );
             },
 
+            Instruction::MODULO => {
+                let a = instruction_pointer.stack.pop().unwrap_or_default();
+                let b = instruction_pointer.stack.pop().unwrap_or_default();
+                instruction_pointer.stack.push( a.wrapping_rem(b) );
+            },
+
+            Instruction::NEGATE => {
+                let top = instruction_pointer.stack.pop().unwrap_or_default();
+                if top == 0 {
+                    instruction_pointer.stack.push(1);}
+                else {
+                    instruction_pointer.stack.push(0);}
+            },
+
+            Instruction::GREATER_THAN => {
+                let a = instruction_pointer.stack.pop().unwrap_or_default();
+                let b = instruction_pointer.stack.pop().unwrap_or_default();
+                if b > a{
+                    instruction_pointer.stack.push(1);}
+                else{
+                    instruction_pointer.stack.push(0);}
+            },
+
             Instruction::PUSH_INTEGER => {
-                // instruction_byte = ASCII value, subtract 48 to get the actual number 
+                // instruction byte = ASCII value, subtract 48 to get the actual number 
                 instruction_pointer.stack.push(instruction_byte - 48);
             }
 

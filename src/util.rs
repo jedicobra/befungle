@@ -1,3 +1,6 @@
+use rand::Rng;
+use rand::distributions::{Distribution, Standard};
+
 pub const GRID_MAX_X: usize = 100;
 pub const GRID_MAX_Y: usize = 100;
 
@@ -8,6 +11,18 @@ pub enum Direction {
     DOWN,
     LEFT,
     RIGHT,
+}
+
+impl Distribution<Direction> for Standard {
+    fn sample<R: Rng + ?Sized>(&self, rng: &mut R) -> Direction {
+        match rng.gen_range(0..=3){
+            0 => Direction::UP,
+            1 => Direction::DOWN,
+            2 => Direction::LEFT,
+            3 => Direction::RIGHT,
+            _ => Direction::RIGHT,
+        }
+    }
 }
 
 #[derive(Debug)]
@@ -21,16 +36,20 @@ pub enum Instruction {
     POP_OUT_AS_CHAR,
     POP_OUT_AS_INTEGER,
 
+    GREATER_THAN,
+    NEGATE,
 
     ADD,
     SUBTRACT,
     MULTIPLY,
     INTEGER_DIVIDE,
+    MODULO,
 
     PC_DIRECTION_LEFT,
     PC_DIRECTION_RIGHT,
     PC_DIRECTION_DOWN,
     PC_DIRECTION_UP,
+    PC_DIRECTION_RANDOM,
 
     END_PROGRAM,
     NOP,
@@ -47,7 +66,12 @@ impl Instruction{
             62 => Instruction::PC_DIRECTION_RIGHT,
             94 => Instruction::PC_DIRECTION_UP,
             118 => Instruction::PC_DIRECTION_DOWN,
+            63 => Instruction::PC_DIRECTION_RANDOM,
 
+            33 => Instruction::NEGATE,
+            96 => Instruction::GREATER_THAN,
+
+            37 => Instruction::MODULO,
             42 => Instruction::MULTIPLY,
             43 => Instruction::ADD,
             45 => Instruction::SUBTRACT,
