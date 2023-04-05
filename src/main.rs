@@ -43,6 +43,22 @@ fn main() {
             Instruction::PC_DIRECTION_UP => instruction_pointer.direction = Direction::UP,
             Instruction::PC_DIRECTION_RANDOM => { instruction_pointer.direction = rand::random::<Direction>(); },
 
+            Instruction::HORIZONTAL_IF => { 
+                let top = instruction_pointer.stack.pop().unwrap_or_default();
+                if top == 0 {
+                    instruction_pointer.direction = Direction::RIGHT;}
+                else {
+                    instruction_pointer.direction = Direction::LEFT;}
+            },
+
+            Instruction::VERTICAL_IF => { 
+                let top = instruction_pointer.stack.pop().unwrap_or_default();
+                if top == 0 {
+                    instruction_pointer.direction = Direction::DOWN;}
+                else {
+                    instruction_pointer.direction = Direction::UP;}
+            },
+
 
 
             Instruction::ADD => {
@@ -81,6 +97,19 @@ fn main() {
                     instruction_pointer.stack.push(1);}
                 else {
                     instruction_pointer.stack.push(0);}
+            },
+
+            Instruction::DUPLICATE => {
+                let top = instruction_pointer.stack.pop().unwrap_or_default();
+                instruction_pointer.stack.push(top);
+                instruction_pointer.stack.push(top);
+            },
+
+            Instruction::SWAP => {
+                let a = instruction_pointer.stack.pop().unwrap_or_default();
+                let b = instruction_pointer.stack.pop().unwrap_or_default();
+                instruction_pointer.stack.push(a);
+                instruction_pointer.stack.push(b);
             },
 
             Instruction::GREATER_THAN => {

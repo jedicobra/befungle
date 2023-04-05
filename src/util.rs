@@ -39,6 +39,9 @@ pub enum Instruction {
     GREATER_THAN,
     NEGATE,
 
+    DUPLICATE,
+    SWAP,
+
     ADD,
     SUBTRACT,
     MULTIPLY,
@@ -50,6 +53,9 @@ pub enum Instruction {
     PC_DIRECTION_DOWN,
     PC_DIRECTION_UP,
     PC_DIRECTION_RANDOM,
+
+    HORIZONTAL_IF,
+    VERTICAL_IF,
 
     END_PROGRAM,
     NOP,
@@ -67,6 +73,13 @@ impl Instruction{
             94 => Instruction::PC_DIRECTION_UP,
             118 => Instruction::PC_DIRECTION_DOWN,
             63 => Instruction::PC_DIRECTION_RANDOM,
+
+            95 => Instruction::HORIZONTAL_IF,
+            124 => Instruction::VERTICAL_IF,
+
+            58 => Instruction::DUPLICATE,
+
+            92 => Instruction::SWAP,
 
             33 => Instruction::NEGATE,
             96 => Instruction::GREATER_THAN,
